@@ -1,7 +1,8 @@
-package com.assignment.phonebook
+package com.assignment.phonebook.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.assignment.phonebook.R
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "933070248558",
+    "firebase_url": "https://phonebook-5b18e.firebaseio.com",
+    "project_id": "phonebook-5b18e",
+    "storage_bucket": "phonebook-5b18e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933070248558:android:ef49ba095cdce4e011e47f",
+        "android_client_info": {
+          "package_name": "com.assignment.phonebook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "933070248558-e9k740f9rs9gg8mr0vmnvn73m0vrnjg2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.assignment.phonebook",
+            "certificate_hash": "152c114f32c46b920ba06e027f032dc84ecdc286"
+          }
+        },
+        {
+          "client_id": "933070248558-9ak1nd1f2t3eeqr071fqqsvdrbldo7kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDij9A2S-2cBhmVckItto-ROFnPci3K3Wg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "933070248558-9ak1nd1f2t3eeqr071fqqsvdrbldo7kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
