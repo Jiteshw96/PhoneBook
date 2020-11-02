@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fmContainer"
+    android:theme="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.assignment.phonebook.activity.SignInActivity">
+    tools:context="com.assignment.phonebook.activity.LaunchActivity">
 
    <!-- <EditText
         android:id="@+id/login_password"

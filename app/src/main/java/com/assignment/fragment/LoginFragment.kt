@@ -8,12 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 
 import com.assignment.phonebook.R
-import com.assignment.phonebook.activity.SignInActivity
+import com.assignment.phonebook.activity.LaunchActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_login.*
-import com.assignment.phonebook.utils.Constants.LOGIN_FRAGMENT
 import com.assignment.phonebook.utils.Constants.REGISTER_FRAGMENT
 import com.assignment.phonebook.utils.Constants.CONTACTS_FRAGMENT
 import com.assignment.phonebook.utils.FirebaseAuthObject
@@ -43,20 +40,25 @@ class LoginFragment : Fragment() {
         auth = FirebaseAuthObject.getFirebaseAuth()
 
         login_btn.setOnClickListener{
-            auth.signInWithEmailAndPassword(login_username.text.toString(),login_password.text.toString())
-                .addOnCompleteListener(activity as SignInActivity) {task->
-                    if (task.isSuccessful){
 
-                        (activity as SignInActivity).switchFragment(CONTACTS_FRAGMENT,null)
-                    }else{
-                        Toast.makeText(context,"Login Failed",Toast.LENGTH_SHORT).show()
+            if(login_username.text.isNullOrEmpty() ||login_password.text.isNullOrEmpty()){
+                Toast.makeText(context,"Please enter all the details",Toast.LENGTH_SHORT).show()
+            }else{
+                auth.signInWithEmailAndPassword(login_username.text.toString(),login_password.text.toString())
+                    .addOnCompleteListener(activity as LaunchActivity) { task->
+                        if (task.isSuccessful){
+                            (activity as LaunchActivity).switchFragment(CONTACTS_FRAGMENT,null)
+                        }else{
+                            Toast.makeText(context,"Login failed, please try again",Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
+            }
+
 
         }
         create_account_btn.setOnClickListener{
 
-            (activity as SignInActivity).switchFragment(REGISTER_FRAGMENT,null)
+            (activity as LaunchActivity).switchFragment(REGISTER_FRAGMENT,null)
         }
     }
 
