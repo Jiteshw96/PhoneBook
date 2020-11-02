@@ -1,13 +1,20 @@
 package com.assignment.fragment
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.*
-import android.widget.Toolbar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-
+import com.assignment.contract.AddNewContactContract.AddContactViewInterface
+import com.assignment.model.Contact
 import com.assignment.phonebook.R
 import com.assignment.phonebook.activity.LaunchActivity
+import com.assignment.phonebook.utils.RandomNumberGenerator
+import com.assignment.presenter.AddContactPresenter
 import kotlinx.android.synthetic.main.fragment_add_contact.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -19,7 +26,9 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddContactFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddContactFragment : Fragment() {
+class AddContactFragment : Fragment(),AddContactViewInterface{
+
+    private val addContactPresenter = AddContactPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -37,33 +46,76 @@ class AddContactFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolBar()
+        setUpUI()
     }
 
-    fun setToolBar(){
+    override fun addNewContact(contact: Contact) {
+        addContactPresenter.validateInputDetails(contact)
+    }
+
+    override fun setUpUI(){
+        firstname.hint = setMandatoryHintData(firstname.hint.toString())
+        lastname.hint = setMandatoryHintData(lastname.hint.toString())
+
+    }
+
+    override fun setToolBar(){
         (activity as LaunchActivity).setSupportActionBar(toolbar)
         (activity as LaunchActivity).supportActionBar?.setHomeButtonEnabled(true)
         (activity as LaunchActivity).supportActionBar?.title = "Save Contact"
         val toolbar = view?.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar?.setNavigationIcon(R.drawable.ic_close_black_24dp)
+        toolbar?.setNavigationOnClickListener{
+           fragmentManager?.popBackStack()
+        }
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context,message,Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.add_contact_menu,menu)
+        inflater.inflate(R.menu.add_contact_menu, menu)
 
     }
 
+    override fun createContactObject():Contact {
+        var number:Int? = null
+       if(mobile_number.text.toString().isNotEmpty()){
+           number =  mobile_number.text.toString().toInt()
+        }
+        return Contact(RandomNumberGenerator.getRandomNumber(),email.text.toString(),firstname.text.toString(),lastname.text.toString(),
+            middlename.text.toString(),number ,notes.text.toString())
 
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when(item.itemId){
-            R.id.action_add->{
+            R.id.action_add -> {
+                addNewContact(createContactObject())
                 return true
             }
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun setMandatoryHintData(hintData: String): SpannableStringBuilder? {
+        val colored = " *"
+        val builder = SpannableStringBuilder()
+        builder.append(hintData)
+        val start = builder.length
+        builder.append(colored)
+        val end = builder.length
+        builder.setSpan(
+            ForegroundColorSpan(resources.getColor(R.color.Red)),
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return builder
     }
 
     companion object {

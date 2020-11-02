@@ -7,19 +7,22 @@ interface AddNewContactContract {
     interface  AddContactViewInterface{
         fun addNewContact(contact:Contact)
         fun setToolBar()
+        fun showToast(message:String)
+        fun setUpUI()
+        fun createContactObject():Contact
     }
 
     interface  AddContactPresenterInterface{
-        fun validateInputDetails(username:String,password:String)
+        fun validateInputDetails(contact: Contact)
         fun getAddContactResponse(contact: Contact)
     }
 
-    interface AddContactModelInterface{
+    interface AddContactModelInteractor{
         interface OnFinishAddContactListener{
             fun onSuccess()
             fun onFailure()
         }
-        fun addNewContactInFirebase(contact: Contact)
+        fun addNewContactInFirebase(contact: Contact,onFinishAddContactListener: OnFinishAddContactListener)
 
     }
 }
