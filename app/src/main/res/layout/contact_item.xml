@@ -11,14 +11,15 @@
         android:id="@+id/profile_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_launcher_background"/>
+        android:src="@drawable/ic_person_black_24dp"/>
 
     <TextView
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:text="User"
+        android:textColor="@color/white"
         android:layout_marginLeft="16dp"/>
 
 </LinearLayout>

@@ -2,29 +2,19 @@ package com.assignment.phonebook.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.assignment.contract.LaunchActivityContract
 import com.assignment.fragment.*
-import com.assignment.model.Contact
-import com.assignment.model.User
 import com.assignment.phonebook.R
 import com.assignment.phonebook.utils.Constants.ADD_CONTACT_FRAGMENT
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_sign_in.*
 import com.assignment.phonebook.utils.Constants.LOGIN_FRAGMENT
 import com.assignment.phonebook.utils.Constants.REGISTER_FRAGMENT
 import com.assignment.phonebook.utils.Constants.CONTACTS_FRAGMENT
 import com.assignment.phonebook.utils.Constants.DETAIL_FRAGMENT
 import com.assignment.phonebook.utils.FirebaseAuthObject
-import com.assignment.phonebook.utils.RandomNumberGenerator
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestore
 
-class LaunchActivity : AppCompatActivity() {
+class LaunchActivity : AppCompatActivity(),LaunchActivityContract {
 
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +71,7 @@ class LaunchActivity : AppCompatActivity() {
     }
 
 
-    fun switchFragment(tag: String, bundle: Bundle?) {
+    override fun switchFragment(tag: String, bundle: Bundle?) {
         when (tag) {
             LOGIN_FRAGMENT -> {
                 val loginFragment = LoginFragment.newInstance()
@@ -106,7 +96,7 @@ class LaunchActivity : AppCompatActivity() {
                 commitFragment(contactsFragment, tag)
             }
             DETAIL_FRAGMENT -> {
-                val detailFragment = DetailFragment.newInstance()
+                val detailFragment = EditFragment.newInstance()
                 if (bundle != null) {
                     detailFragment.arguments = bundle
                 }
@@ -124,19 +114,39 @@ class LaunchActivity : AppCompatActivity() {
         }
     }
 
-    fun commitFragment(fragment: Fragment, tag: String?) {
+  override  fun commitFragment(fragment: Fragment, tag: String?) {
 
-       /* val fragmentOld = supportFragmentManager.findFragmentByTag(LOGIN_FRAGMENT)
-        if (fragmentOld != null) {
-            supportFragmentManager.beginTransaction().remove(fragment).commit();
-        }*/
-        if(tag!!.equals(ADD_CONTACT_FRAGMENT)){
-            val transition = supportFragmentManager.beginTransaction()
-            transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(CONTACTS_FRAGMENT).commit()
-        }
         val transition = supportFragmentManager.beginTransaction()
-        transition.replace(R.id.fmContainer, fragment, tag).commit()
+        when (tag) {
+            ADD_CONTACT_FRAGMENT -> {
+                transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(CONTACTS_FRAGMENT).commit()
+            }
+            REGISTER_FRAGMENT -> {
+                transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(LOGIN_FRAGMENT).commit()
+            }
+            DETAIL_FRAGMENT->{
+                transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(CONTACTS_FRAGMENT).commit()
+            }
+            else -> {
+                transition.replace(R.id.fmContainer, fragment, tag).commit()
+            }
 
+
+        }
+
+
+    }
+
+    override fun showToast(message: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun showProgressBar() {
+        TODO("Not yet implemented")
+    }
+
+    override fun hideProgressBar() {
+        TODO("Not yet implemented")
     }
 
 

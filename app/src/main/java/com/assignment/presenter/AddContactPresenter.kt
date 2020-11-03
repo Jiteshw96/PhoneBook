@@ -11,21 +11,23 @@ class AddContactPresenter(addContactViewInterface: AddContactViewInterface) :
     private val addContactViewInstance: AddContactViewInterface = addContactViewInterface
     private val addContactModelInteractor= AddContactInteractor()
 
-    override fun validateInputDetails(contact: Contact) {
+    override fun validateInputDetails(contact: Contact):Boolean {
         if(contact.first_name.trim().isNullOrEmpty() || contact.last_name.trim().isNullOrEmpty()){
             addContactViewInstance.showToast("Please enter all required fields")
-        }else{
-            getAddContactResponse(contact)
+            return false
+        }
+        return  true
+    }
+
+    override fun getAddContactResponse(contact: Contact) {
+        if(validateInputDetails(contact)){
+            addContactModelInteractor.addNewContactInFirebase(contact,this)
         }
 
     }
 
-    override fun getAddContactResponse(contact: Contact) {
-        addContactModelInteractor.addNewContactInFirebase(contact,this)
-    }
-
     override fun onSuccess() {
-        addContactViewInstance.showToast("Contact Saved")
+        addContactViewInstance.closeFragment()
     }
 
     override fun onFailure() {

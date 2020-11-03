@@ -16,10 +16,7 @@ import com.assignment.presenter.AddContactPresenter
 import kotlinx.android.synthetic.main.fragment_add_contact.*
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -49,9 +46,7 @@ class AddContactFragment : Fragment(),AddContactViewInterface{
         setUpUI()
     }
 
-    override fun addNewContact(contact: Contact) {
-        addContactPresenter.validateInputDetails(contact)
-    }
+
 
     override fun setUpUI(){
         firstname.hint = setMandatoryHintData(firstname.hint.toString())
@@ -81,13 +76,14 @@ class AddContactFragment : Fragment(),AddContactViewInterface{
     }
 
     override fun createContactObject():Contact {
-        var number:Int? = null
-       if(mobile_number.text.toString().isNotEmpty()){
-           number =  mobile_number.text.toString().toInt()
-        }
         return Contact(RandomNumberGenerator.getRandomNumber(),email.text.toString(),firstname.text.toString(),lastname.text.toString(),
-            middlename.text.toString(),number ,notes.text.toString())
+            middlename.text.toString(),mobile_number.text.toString() ,notes.text.toString())
 
+    }
+
+    override fun closeFragment() {
+        showToast("Contact Saved")
+        fragmentManager?.popBackStack()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -100,6 +96,10 @@ class AddContactFragment : Fragment(),AddContactViewInterface{
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun addNewContact(contact: Contact) {
+        addContactPresenter.getAddContactResponse(contact)
     }
 
     fun setMandatoryHintData(hintData: String): SpannableStringBuilder? {

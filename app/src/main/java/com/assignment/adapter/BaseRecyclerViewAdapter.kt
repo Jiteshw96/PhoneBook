@@ -15,6 +15,11 @@ abstract class BaseRecyclerViewAdapter<T>:  RecyclerView.Adapter<RecyclerView.Vi
         this.list?.addAll(items)
         reload()
     }
+    fun removeItems(items: ArrayList<T>){
+        this.list?.removeAll(items
+        )
+        reload()
+    }
 
     fun clear() {
         this.list?.clear()

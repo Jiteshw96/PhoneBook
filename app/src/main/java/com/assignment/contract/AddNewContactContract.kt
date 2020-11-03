@@ -10,17 +10,18 @@ interface AddNewContactContract {
         fun showToast(message:String)
         fun setUpUI()
         fun createContactObject():Contact
+        fun closeFragment()
     }
 
     interface  AddContactPresenterInterface{
-        fun validateInputDetails(contact: Contact)
+       fun validateInputDetails(contact: Contact):Boolean
         fun getAddContactResponse(contact: Contact)
     }
 
     interface AddContactModelInteractor{
         interface OnFinishAddContactListener{
-            fun onSuccess()
-            fun onFailure()
+                fun onSuccess()
+                fun onFailure()
         }
         fun addNewContactInFirebase(contact: Contact,onFinishAddContactListener: OnFinishAddContactListener)
 

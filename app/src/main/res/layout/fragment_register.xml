@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_bg"
     tools:context="com.assignment.fragment.RegisterFragment">
 
 
@@ -26,8 +27,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="250dp"
         android:ems="10"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_edit_box"
         android:hint="UserName"
+        android:drawablePadding="3dp"
+        android:drawableStart="@drawable/ic_email"
         android:inputType="textPersonName"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,17 +45,23 @@
         android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="Password"
+        android:textColor="@color/white"
+        android:drawablePadding="3dp"
+        android:drawableStart="@drawable/ic_password"
         android:inputType="textPassword"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/register_username" />
 
     <Button
         android:id="@+id/register_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="Register"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/register_password" />

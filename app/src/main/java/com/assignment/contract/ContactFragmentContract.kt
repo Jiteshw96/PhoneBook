@@ -7,6 +7,7 @@ interface ContactFragmentContract {
     interface  ContactFragmentViewInterface{
         fun listAllContacts()
         fun sortContacts()
+        fun showToast(message:String)
     }
 
     interface  ContactFragmentPresenterInterface{

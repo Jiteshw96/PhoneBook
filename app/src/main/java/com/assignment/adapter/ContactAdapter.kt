@@ -41,7 +41,7 @@ class ContactAdapter : BaseRecyclerViewAdapter<Contact>() {
 
         fun setUpView(contact: Contact?) {
            //imageView.setImageDrawable(context.resources.getDrawable(R.drawable.ic_launcher_background))
-            textView.text = contact?.first_name
+            textView.text = contact?.first_name?.capitalize()
         }
 
     }
