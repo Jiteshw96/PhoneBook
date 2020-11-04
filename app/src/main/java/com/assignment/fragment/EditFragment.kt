@@ -9,7 +9,8 @@ import com.assignment.model.Contact
 import com.assignment.phonebook.R
 import com.assignment.phonebook.activity.LaunchActivity
 import kotlinx.android.synthetic.main.fragment_edit.*
-import com.assignment.contract.EditContract.DetailContractViewInterface
+import com.assignment.contract.EditContract.EditContractViewInterface
+import com.assignment.phonebook.utils.Constants.CONTACTS_FRAGMENT
 import com.assignment.presenter.EditContactPresenter
 
 
@@ -18,10 +19,10 @@ import com.assignment.presenter.EditContactPresenter
  * Use the [EditFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class EditFragment : Fragment(), DetailContractViewInterface {
+class EditFragment : Fragment(), EditContractViewInterface {
     private lateinit var toggleMenu: Menu
     private lateinit var contact: Contact
-    private val addDetailContactPresenter = EditContactPresenter(this)
+    private val editContactPresenter = EditContactPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -36,6 +37,8 @@ class EditFragment : Fragment(), DetailContractViewInterface {
         return inflater.inflate(R.layout.fragment_edit, container, false)
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpUI()
@@ -46,31 +49,24 @@ class EditFragment : Fragment(), DetailContractViewInterface {
             contact = it as Contact
         }
         setToolBar()
-        editContact(false)
+        editContact(true)
         setContactDetails(contact)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.detail_fragment_menu, menu)
+        inflater.inflate(R.menu.edit_fragment_menu, menu)
         toggleMenu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_edit -> {
-                editContact(true)
-                toggleMenu(true)
-            }
             R.id.action_save -> {
-                toggleMenu(false)
+              //  toggleMenu(false)
                 editContact(false)
                 val contact = createContactObject()
                 updateContact(contact)
 
-            }
-            R.id.action_delete -> {
-                deleteContact(contact)
             }
         }
         return true
@@ -80,20 +76,17 @@ class EditFragment : Fragment(), DetailContractViewInterface {
 
         return Contact(
             contact.id, email.text.toString(), firstname.text.toString(), lastname.text.toString(),
-            middlename.text.toString(), mobile_number.text.toString(), notes.text.toString()
+            middlename.text.toString(),landlinenumber.text.toString(), mobile_number.text.toString(), notes.text.toString()
         )
 
     }
 
+
     override fun closeFragment() {
-        fragmentManager?.popBackStack()
+        fragmentManager?.popBackStack(CONTACTS_FRAGMENT,1)
 
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        toggleMenu(false)
-        super.onPrepareOptionsMenu(menu)
-    }
 
 
     fun toggleMenu(flag: Boolean) {
@@ -116,6 +109,7 @@ class EditFragment : Fragment(), DetailContractViewInterface {
         middlename.setText(contact.middle_name)
         email.setText(contact.email)
         mobile_number.setText(contact.mobile_number)
+        landlinenumber.setText(contact.land_line)
         notes.setText(contact.notes)
 
     }
@@ -158,10 +152,10 @@ class EditFragment : Fragment(), DetailContractViewInterface {
     }
 
     override fun updateContact(contact: Contact) {
-        addDetailContactPresenter.getUpdateContactResponse(contact)
+        editContactPresenter.getUpdateContactResponse(contact)
     }
 
     override fun deleteContact(contact: Contact) {
-        addDetailContactPresenter.getDeleteContactResponse(contact)
+       // editContactPresenter.getDeleteContactResponse(contact)
     }
 }

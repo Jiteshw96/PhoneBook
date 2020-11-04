@@ -11,7 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.assignment.phonebook.utils.Constants.LOGIN_FRAGMENT
 import com.assignment.phonebook.utils.Constants.REGISTER_FRAGMENT
 import com.assignment.phonebook.utils.Constants.CONTACTS_FRAGMENT
-import com.assignment.phonebook.utils.Constants.DETAIL_FRAGMENT
+import com.assignment.phonebook.utils.Constants.DETAIL_CONTACT_FRAGMENT
+import com.assignment.phonebook.utils.Constants.EDIT_FRAGMENT
 import com.assignment.phonebook.utils.FirebaseAuthObject
 
 class LaunchActivity : AppCompatActivity(),LaunchActivityContract {
@@ -95,7 +96,7 @@ class LaunchActivity : AppCompatActivity(),LaunchActivityContract {
                 }
                 commitFragment(contactsFragment, tag)
             }
-            DETAIL_FRAGMENT -> {
+            EDIT_FRAGMENT -> {
                 val detailFragment = EditFragment.newInstance()
                 if (bundle != null) {
                     detailFragment.arguments = bundle
@@ -108,6 +109,13 @@ class LaunchActivity : AppCompatActivity(),LaunchActivityContract {
                     addFragment.arguments = bundle
                 }
                 commitFragment(addFragment, tag)
+            }
+            DETAIL_CONTACT_FRAGMENT->{
+                val detailFragment = DetailFragment.newInstance()
+                if (bundle != null) {
+                    detailFragment.arguments = bundle
+                }
+                commitFragment(detailFragment, tag)
             }
 
 
@@ -124,9 +132,13 @@ class LaunchActivity : AppCompatActivity(),LaunchActivityContract {
             REGISTER_FRAGMENT -> {
                 transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(LOGIN_FRAGMENT).commit()
             }
-            DETAIL_FRAGMENT->{
+            EDIT_FRAGMENT->{
                 transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(CONTACTS_FRAGMENT).commit()
             }
+            DETAIL_CONTACT_FRAGMENT->{
+                transition.replace(R.id.fmContainer, fragment, tag).addToBackStack(CONTACTS_FRAGMENT).commit()
+            }
+
             else -> {
                 transition.replace(R.id.fmContainer, fragment, tag).commit()
             }

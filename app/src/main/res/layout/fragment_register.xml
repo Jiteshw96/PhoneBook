@@ -1,4 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,7 +6,9 @@
     android:background="@drawable/background_bg"
     tools:context="com.assignment.fragment.RegisterFragment">
 
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
@@ -25,7 +27,7 @@
         android:id="@+id/register_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="220dp"
         android:ems="10"
         android:textColor="@color/white"
         android:background="@drawable/custom_edit_box"
@@ -47,6 +49,7 @@
         android:hint="Password"
         android:textColor="@color/white"
         android:drawablePadding="3dp"
+        android:background="@drawable/custom_edit_box"
         android:drawableStart="@drawable/ic_password"
         android:inputType="textPassword"
         android:textColorHint="@color/white"
@@ -65,5 +68,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/register_password" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</ScrollView>

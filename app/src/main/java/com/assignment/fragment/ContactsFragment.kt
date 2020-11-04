@@ -1,23 +1,29 @@
 package com.assignment.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.assignment.adapter.ContactAdapter
 import com.assignment.adapter.OnItemClickListener
+import com.assignment.contract.ContactFragmentContract
 import com.assignment.model.Contact
 import com.assignment.model.User
 import com.assignment.phonebook.R
 import com.assignment.phonebook.activity.LaunchActivity
 import com.assignment.phonebook.utils.Constants.ADD_CONTACT_FRAGMENT
-import com.assignment.phonebook.utils.Constants.DETAIL_FRAGMENT
+import com.assignment.phonebook.utils.Constants.BY_NAME
+import com.assignment.phonebook.utils.Constants.DEFAULT
+import com.assignment.phonebook.utils.Constants.DETAIL_CONTACT_FRAGMENT
+import com.assignment.phonebook.utils.Constants.EDIT_FRAGMENT
 import com.assignment.phonebook.utils.FirebaseAuthObject
 import com.assignment.phonebook.utils.RandomNumberGenerator
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -26,6 +32,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_contacts.*
+import com.assignment.contract.ContactFragmentContract.ContactFragmentViewInterface
+import com.assignment.presenter.ContactPresenter
 
 
 /**
@@ -33,7 +41,7 @@ import kotlinx.android.synthetic.main.fragment_contacts.*
  * Use the [ContactsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ContactsFragment : Fragment() {
+class ContactsFragment : Fragment(), ContactFragmentViewInterface {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -42,8 +50,10 @@ class ContactsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var addContact: ExtendedFloatingActionButton
     private lateinit var rootView:View
+    private var contactPresenter = ContactPresenter(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         onCreateComponent()
     }
 
@@ -61,11 +71,40 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as LaunchActivity).setSupportActionBar(toolbar)
-        (activity as LaunchActivity).supportActionBar?.setTitle("")
-        init()
+        (activity as LaunchActivity).supportActionBar?.setTitle("Contacts")
         getUserContacts()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.contacts_menu, menu)
+        val menuItem = menu.findItem(R.id.search_action)
+        val searchView = menuItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(s: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(s: String?): Boolean {
+                contactAdapter.filter.filter(s.toString())
+                return false
+            }
+
+        })
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId){
+            R.id.sort_name->{
+                updateData(contactList,BY_NAME)
+            }
+            R.id.search_action->{
+
+            }
+        }
+        return true
+    }
 
 
     private fun onCreateComponent(){
@@ -86,7 +125,7 @@ class ContactsFragment : Fragment() {
             override fun onItemClick(position: Int, view: View?) {
                 val bundle = Bundle()
                 bundle.putSerializable("contact", contactList?.get(position))
-                (activity as LaunchActivity).switchFragment(DETAIL_FRAGMENT, bundle)
+                (activity as LaunchActivity).switchFragment(DETAIL_CONTACT_FRAGMENT, bundle)
             }
 
         })
@@ -95,12 +134,6 @@ class ContactsFragment : Fragment() {
     private fun initializeRecycler(){
         recyclerView = rootView.findViewById(R.id.recyclerViewContacts)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-       /* recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )*/
         val divider = DividerItemDecoration(recyclerView.context, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
             ContextCompat.getDrawable(
@@ -113,72 +146,31 @@ class ContactsFragment : Fragment() {
     }
 
 
-    fun init(){
-        auth = FirebaseAuthObject.getFirebaseAuth()
-        db = Firebase.firestore
-        val contact = Contact(
-            RandomNumberGenerator.getRandomNumber(),
-            "jayesh.wadh@",
-            "arun",
-            "wadhwa",
-            "",
-            "9029",
-            ""
-        )
-        val user = User(auth.currentUser?.email.toString())
-        db.collection("allUsers").document(auth.currentUser?.uid.toString()).set(user)
-       // db.collection("allUsers").document(auth.currentUser?.uid.toString()).collection("contacts").document("C-${contact.id}").set(contact)
-    }
-
-    fun getUserContacts(){
+    override fun getUserContacts(){
         contactAdapter.clear()
-        auth = FirebaseAuthObject.getFirebaseAuth()
-        db = Firebase.firestore
-        val docref = db.collection("allUsers").document(auth.currentUser?.uid.toString())
-
-            docref.collection("contacts").addSnapshotListener{ value, error->
-                error?.let {
-                    showToast("Try Again")
-                }
-                value?.let {
-                    val contacts =mutableListOf<Contact>()
-                    for (document in it.iterator()){
-                        val contact = document.toObject(Contact::class.java)
-                        contacts.add(contact)
-                    }
-                    updateData(contacts)
-                }
-
-            }
-
-
-       /* docref.get().addOnSuccessListener{
-                document->
-            user = document.toObject(User::class.java)
-            if(!user?.contacts.isNullOrEmpty()){
-                contactList = null
-                contactList = user?.contacts!!
-                contactAdapter.addItems( user?.contacts as ArrayList<Contact>)
-                contactAdapter.notifyDataSetChanged()
-            }
-            Log.d(TAG, "DocumentSnapshot data: ${user?.contacts?.sortedBy { it.first_name }}")
-        }.addOnFailureListener{
-                exception ->
-            Log.d(TAG, "get failed with ", exception)
-        }*/
+        contactPresenter.getContactList()
     }
 
-     fun showToast(message: String) {
+
+   override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun updateData(contacts: List<Contact>){
+   override fun updateData(contacts: List<Contact>,tag:String){
         contactList = contacts as MutableList<Contact>
+        when(tag){
+            BY_NAME->{
+                contactList.sortBy { it.first_name.toUpperCase() }
+            }
+        }
         if(!contacts.isNullOrEmpty()){
+            contactAdapter.clear()
             contactAdapter.addItems(contacts as ArrayList<Contact>)
             contactAdapter.notifyDataSetChanged()
         }
     }
+
+
 
     companion object {
         /**
@@ -192,4 +184,7 @@ class ContactsFragment : Fragment() {
         @JvmStatic
         fun newInstance() = ContactsFragment()
     }
+
+
+
 }

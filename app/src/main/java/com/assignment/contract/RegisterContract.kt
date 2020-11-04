@@ -2,18 +2,22 @@ package com.assignment.contract
 
 interface RegisterContract {
     interface  RegisterContractViewInterface{
-        fun registerUser(username:String,password:String)
         fun showToast(message:String)
-        fun checkNetworkAvailable():Boolean
+        fun proceedToDashBoard()
+        fun registerUser(username: String,password: String)
 
     }
 
     interface  RegisterContractPresenterInterface{
         fun getRegisterResponse(username:String,password:String)
-        fun validateInputDetails(username:String,password:String)
+        fun validateInputDetails(username:String,password:String):Boolean
     }
 
     interface RegisterContractModelInterface{
-        fun registerUserInDatabase(username:String,password:String)
+        interface OnFinishRegisterListener{
+            fun onSuccess()
+            fun onFailure()
+        }
+        fun registerUserInDatabase(username:String,password:String, onFinishRegisterListener: OnFinishRegisterListener)
     }
 }

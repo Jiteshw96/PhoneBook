@@ -4,7 +4,7 @@ import com.assignment.model.Contact
 
 interface EditContract {
 
-    interface DetailContractViewInterface{
+    interface EditContractViewInterface{
         fun updateContact(contact: Contact)
         fun deleteContact(contact: Contact)
         fun showToast(message: String)
@@ -13,18 +13,18 @@ interface EditContract {
 
     }
 
-    interface  DetailContractPresenterInterface{
+    interface  EditContractPresenterInterface{
         fun getUpdateContactResponse(contact: Contact)
         fun validateInputDetails(contact: Contact):Boolean
         fun getDeleteContactResponse(contact: Contact)
     }
 
-    interface DetailContractModelInterface{
-        interface OnFinishDetailContactListener{
+    interface EditContractModelInterfac{
+        interface OnFinishEditContactListener{
             fun onSuccess(message:String)
             fun onFailure()
         }
-        fun updateContactInFirebase(contact: Contact,onFinishDetailContactListener: OnFinishDetailContactListener)
-        fun deleteContactInFirebase(contact: Contact,onFinishDetailContactListener: OnFinishDetailContactListener)
+        fun updateContactInFirebase(contact: Contact, onFinishEditContactListener: OnFinishEditContactListener)
+        fun deleteContactInFirebase(contact: Contact, onFinishEditContactListener: OnFinishEditContactListener)
     }
 }

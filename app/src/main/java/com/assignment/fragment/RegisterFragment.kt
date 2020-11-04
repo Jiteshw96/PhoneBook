@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.assignment.contract.RegisterContract.RegisterContractViewInterface
 
 import com.assignment.phonebook.R
 import com.assignment.phonebook.activity.LaunchActivity
@@ -14,17 +15,17 @@ import com.assignment.phonebook.utils.FirebaseAuthObject
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_register.*
 import com.assignment.phonebook.utils.Constants.CONTACTS_FRAGMENT
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.assignment.presenter.RegisterPresenter
+
+
 
 /**
  * A simple [Fragment] subclass.
  * Use the [RegisterFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RegisterFragment : Fragment() {
+class RegisterFragment : Fragment(),RegisterContractViewInterface {
+    val registerPresenter = RegisterPresenter(this)
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,19 +45,8 @@ class RegisterFragment : Fragment() {
         auth = FirebaseAuthObject.getFirebaseAuth()
 
         register_btn.setOnClickListener{
-            if(register_username.text.isNullOrEmpty() ||register_password.text.isNullOrEmpty()){
-                Toast.makeText(context,"Please enter all the details",Toast.LENGTH_SHORT).show()
-            }else{
-                auth.createUserWithEmailAndPassword(register_username.text.toString(),register_password.text.toString())
-                    .addOnCompleteListener(activity as LaunchActivity){ task->
-                        if(task.isSuccessful){
-                            (activity as LaunchActivity).switchFragment(CONTACTS_FRAGMENT,null)
-                        }else{
-                            Log.w("Register Exception",task.exception)
-                            Toast.makeText(context,"Some error occurred,please try again",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            }
+
+            registerUser(register_username.text.trim().toString(),register_password.text.trim().toString())
         }
     }
 
@@ -67,8 +57,19 @@ class RegisterFragment : Fragment() {
          *
          * @return A new instance of fragment RegisterFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() = RegisterFragment()
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+    }
+
+    override fun proceedToDashBoard() {
+        (activity as LaunchActivity).switchFragment(CONTACTS_FRAGMENT,null)
+    }
+
+    override fun registerUser(username: String, password: String) {
+        registerPresenter.getRegisterResponse(username,password)
     }
 }

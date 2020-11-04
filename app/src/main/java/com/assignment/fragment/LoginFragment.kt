@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.assignment.contract.LoginContract
 
 import com.assignment.phonebook.R
 import com.assignment.phonebook.activity.LaunchActivity
@@ -14,14 +15,16 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import com.assignment.phonebook.utils.Constants.REGISTER_FRAGMENT
 import com.assignment.phonebook.utils.Constants.CONTACTS_FRAGMENT
 import com.assignment.phonebook.utils.FirebaseAuthObject
-
+import com.assignment.contract.LoginContract.LoginViewInterface
+import com.assignment.presenter.LoginPresenter
 
 /**
  * A simple [Fragment] subclass.
  * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(), LoginViewInterface {
+    val loginPresenter = LoginPresenter(this)
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,23 +40,11 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = FirebaseAuthObject.getFirebaseAuth()
+
 
         login_btn.setOnClickListener{
 
-            if(login_username.text.isNullOrEmpty() ||login_password.text.isNullOrEmpty()){
-                Toast.makeText(context,"Please enter all the details",Toast.LENGTH_SHORT).show()
-            }else{
-                auth.signInWithEmailAndPassword(login_username.text.toString(),login_password.text.toString())
-                    .addOnCompleteListener(activity as LaunchActivity) { task->
-                        if (task.isSuccessful){
-                            (activity as LaunchActivity).switchFragment(CONTACTS_FRAGMENT,null)
-                        }else{
-                            Toast.makeText(context,"Login failed, please try again",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            }
-
+            validateUser(login_username.text.trim().toString(),login_password.text.trim().toString())
 
         }
         create_account_btn.setOnClickListener{
@@ -62,7 +53,9 @@ class LoginFragment : Fragment() {
         }
     }
 
-
+    override fun validateUser(username: String, password: String) {
+       loginPresenter.getLoginResponse(username,password)
+    }
 
     companion object {
         /**
@@ -74,5 +67,14 @@ class LoginFragment : Fragment() {
         @JvmStatic
         fun newInstance() = LoginFragment()
 
+    }
+
+
+    override fun showToast(message: String) {
+        Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+    }
+
+    override fun proceedToDashBoard() {
+        (activity as LaunchActivity).switchFragment(CONTACTS_FRAGMENT,null)
     }
 }

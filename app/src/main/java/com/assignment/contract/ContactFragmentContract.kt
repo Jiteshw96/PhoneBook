@@ -5,9 +5,9 @@ import com.assignment.model.Contact
 interface ContactFragmentContract {
 
     interface  ContactFragmentViewInterface{
-        fun listAllContacts()
-        fun sortContacts()
         fun showToast(message:String)
+        fun updateData(contacts: List<Contact>,tag:String)
+        fun getUserContacts()
     }
 
     interface  ContactFragmentPresenterInterface{
@@ -16,7 +16,11 @@ interface ContactFragmentContract {
     }
 
     interface ContactFragmentModelInterface{
-        fun getUserContactsFromFirebase()
+        interface OnFinishGetContactListener{
+            fun onSuccess(contacts:List<Contact>)
+            fun onFailure(message: String)
+        }
+        fun getUserContactsFromFirebase(onFinishDetailContactListener:OnFinishGetContactListener)
     }
 
 
